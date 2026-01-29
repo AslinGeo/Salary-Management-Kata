@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:salary_management_kata/feature/app/data/models/employee.dart';
 import 'package:salary_management_kata/feature/app/presentation/ui/employee_list/employee_card.dart';
+import 'package:salary_management_kata/feature/app/presentation/ui/widgets/confirm_popup.dart';
 
 class EmployeeListPage extends StatelessWidget {
   const EmployeeListPage({super.key});
@@ -44,10 +45,11 @@ class EmployeeListPage extends StatelessWidget {
                 return EmployeeCard(
                   employee: employees[index],
                   onEdit: () {
-                    // Navigate to Edit
+                    context.push('/edit', extra: employees[index]);
                   },
-                  onDelete: () {
-                    // Delete action
+                  onDelete: () async {
+                    final confirmed = await showConfirmDeleteDialog(context);
+                    if (confirmed == true) {}
                   },
                 );
               },
