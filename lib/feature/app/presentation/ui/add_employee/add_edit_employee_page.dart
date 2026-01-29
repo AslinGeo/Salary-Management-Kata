@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:salary_management_kata/feature/app/data/models/employee.dart';
+import 'package:salary_management_kata/feature/app/presentation/state/employee/employee_bloc.dart';
+import 'package:salary_management_kata/feature/app/presentation/state/employee/employee_event.dart';
 import 'package:salary_management_kata/feature/app/presentation/ui/add_employee/app_text_field.dart';
 
 class AddEditEmployeePage extends StatefulWidget {
@@ -52,17 +56,19 @@ class _AddEditEmployeePageState extends State<AddEditEmployeePage> {
     if (!_formKey.currentState!.validate()) return;
 
     final employee = Employee(
-      id: widget.employee?.id ?? 0,
+      id: widget.employee?.id,
       fullName: _nameController.text.trim(),
       jobTitle: _jobTitleController.text.trim(),
       country: _countryController.text.trim(),
       salary: double.parse(_salaryController.text),
     );
 
-    // Later → dispatch BLoC event
-    // context.read<EmployeeBloc>().add(...)
-
-    Navigator.pop(context, employee);
+    if (employee.id == null) {
+      context.read<EmployeeBloc>().add(AddEmployee(employee));
+    } else {
+      context.read<EmployeeBloc>().add(UpdateEmployee(employee));
+    }
+    context.pop();
   }
 
   @override
